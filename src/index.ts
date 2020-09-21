@@ -3,7 +3,7 @@
 // stores data in mongodb database
 
 import * as ttn from "ttn";
-import { insertDocument } from "./lib/mongo";
+import { insertDocument } from "./lib/influxdb";
 
 const user = process.env.MQTT_USER;
 const password = process.env.MQTT_PASSWORD;
@@ -16,18 +16,19 @@ ttn
     console.log("waiting for data from nodes...");
     // as soon as ttn app receives uploads from
     client.on("uplink", function (devID, payload) {
-        const messageObject = {
-          device: payload["dev_id"],
-          counter: payload["counter"],
-          tod: new Date().toJSON().slice(0, 19).replace(/T/g, " "),
-          fields: payload["payload_fields"],
-          payload: payload["payload_raw"],
-          metadata: payload["metadata"],
-        };
-        console.log("*** \n Received uplink from: ", devID, "\n*** ")
-        insertDocument(messageObject);
-        console.log("data was susccessfully written into collection", "\nwaiting from data from nodes...")
-      })
+      console.log(payload)
+      const messageObject = {
+        device: payload["dev_id"],
+        counter: payload["counter"],
+        tod: new Date().toJSON().slice(0, 19).replace(/T/g, " "),
+        fields: payload["payload_fields"],
+        payload: payload["payload_raw"],
+        metadata: payload["metadata"],
+      };
+      console.log("*** \n Received uplink from: ", devID, "\n*** ")
+      insertDocument(messageObject);
+      console.log("data was susccessfully written into collection", "\nwaiting from data from nodes...")
+    })
   })
   .catch(function (error) {
     console.error("Error - couldn`t connect to TTN console.", error);
