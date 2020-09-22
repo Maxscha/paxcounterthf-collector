@@ -1,20 +1,31 @@
 version: "3.8"
 services:
   broker:
-    restart: always
     build:
       context: .
     env_file:
       - .env
   influxdb:
-    restart: always
-    image: quay.io/influxdb/influxdb:2.0.0-beta
+    restart: always    
+    image: influxdb:1.8.2
+    environment: 
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=Tempelhof
+      - INFLUXDB_USER=citylab
+      - INFLUXDB_USER_PASSWORD=Tempelhof
+      - INFLUXDB_READ_USER=citylab-read
+      - INFLUXDB_READ_USER_PASSWORD=citylab-read
+      - INFLUXDB_DB=Sensorfeld
+      - INFLUXDB_HTTP_FLUX_ENABLED=true
     ports:
-      - "9998:9999"
-    expose:
-      - 9998
-    volumes:
-      - ./data:/root/.influxdbv2
+      - 8086:8086
+  influxui:
+    restart: always
+    image: chronograf:latest
+    environment:
+      - INFLUXDB_URL=http://influxdb:8086
+      - INFLUXDB_USERNAME=admin
+      - INFLUXDB_PASSWORD=Tempelhof
   nginx:
     restart: always
     image: nginx
@@ -22,6 +33,6 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
     ports:
       - 80:80
-      - 81:81
+      - 7000:81
       - 443:443
     

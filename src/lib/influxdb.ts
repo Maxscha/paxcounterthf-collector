@@ -3,17 +3,18 @@ const { hostname } = require('os')
 
 // connects to personal mongodb + defines funtion to store data
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-const url = process.env['INFLUX_URL']
+const url = process.env['INFLUX_URL'] || "http://influxdb:8086"
 /** InfluxDB authorization token */
 const token = process.env['INFLUX_TOKEN']
+const username = "admin"
+const password = "Tempelhof"
 /** Organization within InfluxDB  */
-const org = process.env['INFLUX_ORG']
+// const org = process.env['INFLUX_ORG']
 /**InfluxDB bucket used in examples  */
-const bucket = process.env['INFLUX_BUCKET']
+const bucket = process.env['INFLUX_BUCKET'] || "Sensorfeld"
 
 // importing module "mongodb"
-const MongoClient = require("mongodb").MongoClient;
-const writeApi = new InfluxDB({ url, token }).getWriteApi(org, bucket)
+const writeApi = new InfluxDB({ url: url, token: `${username}:${password}` }).getWriteApi('', bucket)
 
 
 export async function insertDocument(data) {
