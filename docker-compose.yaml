@@ -6,6 +6,8 @@ services:
       context: .
     env_file:
       - .env
+    ports:
+      - "7777:3000"
   influxdb:
     restart: always
     image: quay.io/influxdb/influxdb:2.0.0-beta

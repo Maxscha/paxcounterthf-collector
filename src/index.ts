@@ -8,6 +8,11 @@ import { insertDocument } from "./lib/influxdb";
 const user = process.env.MQTT_USER;
 const password = process.env.MQTT_PASSWORD;
 
+const express = require("express")
+const bodyParser = require("body-parser")
+const app = express()
+const PORT = 5555
+
 console.log("trying to connect to TTN console...");
 ttn
   .data(user, password)
@@ -35,12 +40,26 @@ ttn
     process.exit(1);
   });
 
+// Tell express to use body-parser's JSON parsing
+app.use(bodyParser.json())
+
+app.post("/hook", (req, res) => {
+  console.log(req.body) // Call your action on the request here
+  res.status(200).end() // Responding is important
+})
+
+
+// Start express on the defined port
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+
+
 function exitHandler(options, err): void {
   if (err) {
     console.error("Application exiting...", err);
   }
   process.exit();
 }
+
 
 process.on("exit", exitHandler.bind(null, { cleanup: true }));
 process.on("SIGINT", exitHandler.bind(null, { exit: true }));
