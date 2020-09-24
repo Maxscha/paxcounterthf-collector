@@ -6,12 +6,12 @@ const { hostname } = require('os')
 const url = process.env['INFLUX_URL'] || "http://influxdb:8086"
 /** InfluxDB authorization token */
 const token = process.env['INFLUX_TOKEN']
-const username = "admin"
-const password = "Tempelhof"
+const username = process.env['INFLUX_USER']
+const password = process.env['INFLUX_PASSWORD']
 /** Organization within InfluxDB  */
 // const org = process.env['INFLUX_ORG']
 /**InfluxDB bucket used in examples  */
-const bucket = process.env['INFLUX_BUCKET'] || "Sensorfeld"
+const bucket = process.env['INFLUX_BUCKET']
 
 // importing module "mongodb"
 const writeApi = new InfluxDB({ url: url, token: `${username}:${password}` }).getWriteApi('', bucket)

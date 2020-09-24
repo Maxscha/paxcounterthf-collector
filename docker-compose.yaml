@@ -8,24 +8,28 @@ services:
   influxdb:
     restart: always    
     image: influxdb:1.8.2
+    env_file: 
+      - .env
     environment: 
-      - INFLUXDB_ADMIN_USER=admin
-      - INFLUXDB_ADMIN_PASSWORD=Tempelhof
+      - INFLUXDB_ADMIN_USER=$INFLUX_USER
+      - INFLUXDB_ADMIN_PASSWORD=$INFLUX_PASSWORD
       - INFLUXDB_USER=citylab
       - INFLUXDB_USER_PASSWORD=Tempelhof
       - INFLUXDB_READ_USER=citylab-read
       - INFLUXDB_READ_USER_PASSWORD=citylab-read
-      - INFLUXDB_DB=Sensorfeld
-      - INFLUXDB_HTTP_FLUX_ENABLED=true
+      - INFLUXDB_DB=$INFLUX_BUCKET
+      - INFLUXDB_HTTP_FLUX_ENABLED      
     ports:
       - 8086:8086
   influxui:
     restart: always
     image: chronograf:latest
+    env_file: 
+      - .env
     environment:
       - INFLUXDB_URL=http://influxdb:8086
-      - INFLUXDB_USERNAME=admin
-      - INFLUXDB_PASSWORD=Tempelhof
+      - INFLUXDB_USERNAME=$INFLUX_USER
+      - INFLUXDB_PASSWORD=$INFLUX_PASSWORD
   nginx:
     restart: always
     image: nginx
