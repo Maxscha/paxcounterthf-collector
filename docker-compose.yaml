@@ -5,6 +5,8 @@ services:
       context: .
     env_file:
       - .env
+    ports:
+      - 3000:3000
   influxdb:
     restart: always    
     image: influxdb:1.8.2
